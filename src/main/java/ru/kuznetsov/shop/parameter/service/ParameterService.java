@@ -13,6 +13,10 @@ public class ParameterService {
 
     private final ParameterRepository parameterRepository;
 
+    public boolean containsParameter(String key) {
+        return parameterRepository.findByKey(key).isPresent();
+    }
+
     public Iterable<Parameter> findAll() {
         return parameterRepository.findAll();
     }
@@ -29,19 +33,43 @@ public class ParameterService {
         return parameterRepository.findByValue(value);
     }
 
+    public Parameter save(String key, String value) {
+        Parameter p = new Parameter();
+        p.setKey(key);
+        p.setValue(value);
+        return parameterRepository.save(p);
+    }
+
+    public Parameter save(String key, String value, String comment) {
+        Parameter p = new Parameter();
+        p.setKey(key);
+        p.setValue(value);
+        p.setComment(comment);
+        return parameterRepository.save(p);
+    }
+
     public Parameter save(Parameter parameter) {
         return parameterRepository.save(parameter);
+    }
+
+    public Parameter update(String key, String value) {
+        deleteByKey(key);
+        return save(key, value);
     }
 
     public void deleteById(Long id) {
         parameterRepository.deleteById(id);
     }
 
-    public String getParameterValueString(String key){
+    public void deleteByKey(String key) {
+        findByKey(key).ifPresent(parameterRepository::delete);
+    }
+
+    public String getParameterValueString(String key) {
         return getParameterValue(key);
     }
 
-    public Long getParameterValueLong(String key){
+    public Long getParameterValueLong(String key) {
         String parameterValue = getParameterValue(key);
         try {
             return Long.parseLong(parameterValue);
@@ -50,7 +78,7 @@ public class ParameterService {
         }
     }
 
-    private String getParameterValue(String key){
+    private String getParameterValue(String key) {
         return findByKey(key).orElseThrow(() -> new RuntimeException("Parameter with key " + key + " not found")).getValue();
     }
 }
