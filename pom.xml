@@ -9,7 +9,7 @@
         <version>1.0.17</version>
 	</parent>
 
-	<artifactId>Parameter</artifactId>
+	<artifactId>parameter</artifactId>
 	<version>1.0.0</version>
 
 	<name>Parameter</name>
